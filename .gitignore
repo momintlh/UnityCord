@@ -71,10 +71,13 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-# Rider Stuff
 .idea/
+/.vscode
+
 Assets/msedgedriver.exe
 Assets/msedgedriver.exe.meta
 Assets/PlayroomKit/node_modules
 Assets/PlayroomKit/node_modules.meta
-/.vscode
+Assets/UnityCord/node_modules
+Assets/UnityCord/node_modules.meta
+Assets/UnityCord/src/testing.ts

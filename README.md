@@ -1,1 +1,1 @@
-"# embedded-app-sdk-unity" 
+# embedded-app-sdk-unity
