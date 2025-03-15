@@ -10,7 +10,7 @@ export default defineConfig({
         viteStaticCopy({
             targets: [
                 {
-                    src: 'src/index.js',
+                    src: 'src/index.ts',
                     dest: './',
                     rename: 'bridge.jslib'
                 },
@@ -20,7 +20,7 @@ export default defineConfig({
     build: {
         lib: {
             name: "UnityCordPluginFrameworks",
-            entry: resolve(__dirname, 'src/frameworks.js'),
+            entry: resolve(__dirname, 'src/frameworks.ts'),
             fileName: (format) => `UnityCordFrameworks.jspre`,
             formats: ['umd']
         },
