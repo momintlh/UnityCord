@@ -7,8 +7,12 @@ mergeInto(LibraryManager.library, {
         prefix = UTF8ToString(prefix)
         target = UTF8ToString(target)
 
-        console.log(`PatchingURL: ${prefix} and ${target}`)
+        console.log(`[JSLIB]: PatchingURL: ${prefix} and ${target}`)
 
-        SDK.patchUrlMappings([{ prefix: prefix, target: target }])
+        try {
+            SDK.patchUrlMappings([{ prefix: prefix, target: target }])
+        } catch (error) {
+            console.error(`[JSLIB] error PatchUrlMappingsInternal: ${error}`)
+        }
     },
 });
