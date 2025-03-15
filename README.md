@@ -3,9 +3,6 @@ UnityCord acts as a bridge for [Discord's Embedded App SDK](https://github.com/d
 
 Currently, there are no official UnityCord documentation pages, but you can easily follow the [official Discord documentation](https://discord.com/developers/docs/developer-tools/embedded-app-sdk#install-the-sdk) since the differences are minimal.
 
-| **TypeScript** | **UnityCord (C#)** |
-|----------------|---------------------|
-
 <table>
 <tr>
 <td> Embedded-sdk-app (JS/TS) </td> <td> UnityCord (C#) </td>
@@ -27,7 +24,6 @@ using UnityCord;
 List<Mapping> mappings = new List<Mapping> {
     new Mapping { Prefix = "foo", Target = "foo.com" }
 };
-
 
 Utils.PatchUrlMappings(mappings);
 ```
