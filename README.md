@@ -1,4 +1,5 @@
-UnityCord
+### UnityCord
+
 UnityCord acts as a bridge for [Discord's Embedded App SDK](https://github.com/discord/embedded-app-sdk) and provides additional utilities to simplify creating Discord activities with Unity.
 
 Currently, there are no official UnityCord documentation pages, but you can easily follow the [official Discord documentation](https://discord.com/developers/docs/developer-tools/embedded-app-sdk#install-the-sdk) since the differences are minimal.
@@ -18,7 +19,7 @@ Currently, there are no official UnityCord documentation pages, but you can easi
 </td>
 <td>
     
-```C#
+```cs
 using UnityCord;
 
 List<Mapping> mappings = new List<Mapping> {
