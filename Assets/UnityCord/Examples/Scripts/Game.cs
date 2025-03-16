@@ -33,6 +33,7 @@ namespace UnityCord
 
 #if UNITY_WEBGL
             Utils.PatchUrlMappings(mappings);
+
 #endif
 
             // initialize playroom with discord mode

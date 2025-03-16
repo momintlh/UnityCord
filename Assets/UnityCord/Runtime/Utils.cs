@@ -9,12 +9,29 @@ namespace UnityCord
         {
             for (int i = 0; i < mappings.Count; i++)
             {
+                // TODO: Pass the config:
                 PatchUrlMappingsInternal(mappings[i].Prefix, mappings[i].Target);
             }
         }
 
+        public static void AttemptRemap(RemapInput remapInput)
+        {
+            for (int i = 0; i < remapInput.Mappings.Count; i++)
+            {
+                AttemptRemapInternal(remapInput.URL, remapInput.Mappings[i].Prefix, remapInput.Mappings[i].Target);
+            }
+        }
+
+        #region Internals
+
         [DllImport("__Internal")]
+        // TODO: Pass the config:
         private static extern void PatchUrlMappingsInternal(string prefix, string target);
-        //bool patchFetch = true, bool patchWebSocket = true, bool patchXhr = true, bool patchSrcAttributes = false);
+
+
+        [DllImport("__Internal")]
+        private static extern void AttemptRemapInternal(string URL, string prefix, string target);
+
+        #endregion
     }
 }

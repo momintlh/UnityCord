@@ -1,9 +1,16 @@
+using System.Collections.Generic;
+
 namespace UnityCord
 {
     public class Mapping
     {
         public string Prefix { get; set; }
         public string Target { get; set; }
+    }
+
+    public class RemapInput {
+        public string URL { get; set; }
+        public List<Mapping> Mappings { get; set; }
     }
 
     public class PatchUrlMappingsConfig

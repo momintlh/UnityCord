@@ -15,4 +15,18 @@ mergeInto(LibraryManager.library, {
             console.error(`[JSLIB] error PatchUrlMappingsInternal: ${error}`)
         }
     },
+
+
+    AttemptRemapInternal: function (urlString, prefix, target) {
+        const url = new URL(UTF8ToString(urlString))
+        console.log(`[JSLIB]: AttemptRemapInternal: url: ${url}, prefix: ${prefix}, target: ${target}`)
+        
+        try {
+            SDK.attemptRemap({ url: url, mappings: [{ prefix: prefix, target: target }] })
+        } catch (error) {
+            console.error(`[JSLIB] error AttemptRemapInternal: ${error}`)
+        }
+    },
+
+
 });

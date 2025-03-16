@@ -1,0 +1,12 @@
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
+namespace UnityCord
+{
+    /// <summary>
+    /// This will be the entry point for interacting with Discord SDK. 
+    /// </summary>
+    public class UnityCord
+    {
+    }
+}
