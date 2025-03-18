@@ -76,12 +76,9 @@ crashlytics-build.properties
 
 Assets/msedgedriver.exe
 Assets/msedgedriver.exe.meta
+
 Assets/PlayroomKit/node_modules
 Assets/PlayroomKit/node_modules.meta
+
 Assets/UnityCord/node_modules
 Assets/UnityCord/node_modules.meta
-/Assets/PlayroomKit
-/Assets/WebGLTemplates
-/Assets/WebGLTemplates
-Assets/WebGLTemplates.meta
-Assets/PlayroomKit.meta
