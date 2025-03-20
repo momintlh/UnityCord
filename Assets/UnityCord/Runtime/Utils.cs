@@ -28,7 +28,6 @@ namespace UnityCord
         // TODO: Pass the config:
         private static extern void PatchUrlMappingsInternal(string prefix, string target);
 
-
         [DllImport("__Internal")]
         private static extern void AttemptRemapInternal(string URL, string prefix, string target);
 

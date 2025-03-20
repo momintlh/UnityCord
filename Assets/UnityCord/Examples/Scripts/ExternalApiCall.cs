@@ -7,7 +7,7 @@ using TMPro;
 
 namespace UnityCord
 {
-    public class Game : MonoBehaviour
+    public class ExternalApiCall : MonoBehaviour
     {
         [SerializeField] TextMeshProUGUI responseText;
 
