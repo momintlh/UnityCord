@@ -27,6 +27,19 @@ var LibraryMyPlugin = {
   },
   //#endregion
 
+  //#region Commands
+  AuthorizeInternal : function (authorizeInput , callback) 
+  {
+    // TODO: Parse authorizeInput JSON.
+
+    globals.discordSdK.commands.authorize({client_id: "1234", scope: ["activities.read"], response_type: "code" ,code_challenge: "123", state: "123", code_challenge_method: "S256", prompt:"none"}).then(result => {
+      // TODO: convert result to C# string 
+      {{{ makeDynCall("vi", "callback") }}}(result);
+    })
+  },
+  //#endregion
+
+
   //#region Utils
   PatchUrlMappingsInternal: function (prefix, target) {
     prefix = UTF8ToString(prefix);
