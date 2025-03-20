@@ -8,7 +8,7 @@ var LibraryMyPlugin = {
     clientId = UTF8ToString(clientId);
     console.log(`[JSLIB]: DiscordSDKInternal: ${clientId}`);
     try {
-      global.discordSdK = new SDK.DiscordSDK(clientId);
+      globals.discordSdK = new SDK.DiscordSDK(clientId);
     } catch (error) {
       console.error(`[JSLIB] error DiscordSDKInternal: ${error}`);
     }
@@ -17,10 +17,8 @@ var LibraryMyPlugin = {
 
   //#region Methods
   ReadyInternal: function (callback) {
-    console.log(`[JSLIB]: ReadyInternal`);
     try {
-      global.discordSdK.ready().then(() => {
-        console.log(`[JSLIB]: Discord SDK is ready`);
+      globals.discordSdK.ready().then(() => {
         {{{ makeDynCall("v", "callback") }}}(null);
       });
     } catch (error) {

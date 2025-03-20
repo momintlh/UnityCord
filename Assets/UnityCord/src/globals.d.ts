@@ -11,7 +11,7 @@ declare global {
   // Optionally, if you prefer using the SDK identifier directly, you can declare it:
   const SDK: typeof import("@discord/embedded-app-sdk");
 
-  const global: {
+  const globals: {
     discordSdK: DiscordSDK;
   };
 
