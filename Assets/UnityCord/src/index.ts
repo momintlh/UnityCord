@@ -28,8 +28,7 @@ var LibraryMyPlugin = {
   //#endregion
 
   //#region Commands
-  AuthorizeInternal : function (authorizeInput , callback) 
-  {
+  AuthorizeInternal : function (authorizeInput , callback) {
     // TODO: Parse authorizeInput JSON.
 
     globals.discordSdK.commands.authorize({client_id: "1234", scope: ["activities.read"], response_type: "code" ,code_challenge: "123", state: "123", code_challenge_method: "S256", prompt:"none"}).then(result => {
@@ -37,8 +36,18 @@ var LibraryMyPlugin = {
       {{{ makeDynCall("vi", "callback") }}}(result);
     })
   },
-  //#endregion
 
+  OpenExternalLinkInternal: function (url, callback) {
+    url = UTF8ToString(url);
+    globals.discordSdK.commands.openExternalLink({
+      url: url
+    }).then(({opened}) => {
+      console.log(`[JSLIB] URL ${url} opened? ${opened}`);
+      {{{ makeDynCall('v', "callback") }}}(null) 
+    });
+  },
+
+  //#endregion
 
   //#region Utils
   PatchUrlMappingsInternal: function (prefix, target) {

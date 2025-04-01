@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using AOT;
-using Playroom;
 
 namespace UnityCord
 {
@@ -24,6 +23,7 @@ namespace UnityCord
             ReadyInternal(InvokeCallback);
         }
 
+        // TODO: make a proper callback handler
         [MonoPInvokeCallback(typeof(Action))]
         private static void InvokeCallback()
         {

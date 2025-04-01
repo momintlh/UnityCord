@@ -17,16 +17,36 @@ var LibraryMyPlugin = {
 
   //#region Methods
   ReadyInternal: function (callback) {
-    console.log(`[JSLIB]: ReadyInternal`);
     try {
       globals.discordSdK.ready().then(() => {
-        console.log(`[JSLIB]: Discord SDK is ready`);
         {{{ makeDynCall("v", "callback") }}}(null);
       });
     } catch (error) {
       console.error(`[JSLIB] error ReadyInternal: ${error}`);
     }
   },
+  //#endregion
+
+  //#region Commands
+  AuthorizeInternal : function (authorizeInput , callback) {
+    // TODO: Parse authorizeInput JSON.
+
+    globals.discordSdK.commands.authorize({client_id: "1234", scope: ["activities.read"], response_type: "code" ,code_challenge: "123", state: "123", code_challenge_method: "S256", prompt:"none"}).then(result => {
+      // TODO: convert result to C# string 
+      {{{ makeDynCall("vi", "callback") }}}(result);
+    })
+  },
+
+  OpenExternalLinkInternal: function (url, callback) {
+    url = UTF8ToString(url);
+    globals.discordSdK.commands.openExternalLink({
+      url: url
+    }).then(({opened}) => {
+      console.log(`[JSLIB] URL ${url} opened? ${opened}`);
+      {{{ makeDynCall('v', "callback") }}}(null) 
+    });
+  },
+
   //#endregion
 
   //#region Utils
