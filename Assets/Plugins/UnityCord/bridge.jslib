@@ -43,7 +43,6 @@ var LibraryMyPlugin = {
       url: url
     }).then(({opened}) => {
       console.log(`[JSLIB] URL ${url} opened? ${opened}`);
-      {{{ makeDynCall('v', "callback") }}}(null) 
     });
   },
 

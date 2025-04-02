@@ -17,7 +17,7 @@ namespace UnityCord
 
         // Using Playroomkit for setting up discord auth and hosting the activity.
         PlayroomKit prk;
-        bool coinInserted;
+        bool discordReady;
 
         // Creating the mappings for the external resources, we will need to add this in discord developer portal as well check : https://discord.com/developers/docs/activities/development-guides#using-external-resources
         List<Mapping> mappings = new()
@@ -28,13 +28,15 @@ namespace UnityCord
         void Awake()
         {
             prk = new();
+            APIButton.interactable = false;
+            ExternalURLButton.interactable = false;
+
             APIButton.onClick.AddListener(APICall);
             ExternalURLButton.onClick.AddListener(() =>
             {
 #if UNITY_WEBGL && !UNITY_EDITOR
                 Commands.OpenExternalLink("https://github.com/momintlh/unityCord");
 #endif
-                Debug.Log("openExternalLink");
             });
         }
 
@@ -51,7 +53,13 @@ namespace UnityCord
             }, () =>
             {
                 Debug.Log("Coin Inserted");
-                coinInserted = true;
+                prk.GetDiscordClient().Ready(() =>
+                {
+                    Debug.LogWarning("Discord SDK is ready through playroom woohoo!");
+                    discordReady = true;
+                    APIButton.interactable = true;
+                    ExternalURLButton.interactable = true;
+                });
             });
         }
 
