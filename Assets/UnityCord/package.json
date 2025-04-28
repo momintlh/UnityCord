@@ -11,6 +11,6 @@
     "copy:bridge": "vite build --config vite.copy.config.js"
   },
   "dependencies": {
-    "@discord/embedded-app-sdk": "^1.9.0"
+    "@discord/embedded-app-sdk": "^2.0.0"
   }
 }
