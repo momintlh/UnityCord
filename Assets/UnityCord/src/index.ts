@@ -46,6 +46,13 @@ var LibraryMyPlugin = {
     });
   },
 
+  GetUserInternal(userId, callback) {
+    userId = UTF8ToString(userId);
+    globals.discordSdK.commands.getUser({id: userId}).then(result => {
+      console.log(`[JSLIB]: Result in GetUser: ${result}`)
+      {{{ makeDynCall('vi', 'callback') }}}(_ConvertString(result.avatar))
+    })
+  },
   //#endregion
 
   //#region Utils
@@ -76,6 +83,13 @@ var LibraryMyPlugin = {
     } catch (error) {
       console.error(`[JSLIB] error AttemptRemapInternal: ${error}`);
     }
+  },
+
+  ConvertString: function (str) {
+    var bufferSize = lengthBytesUTF8(str) + 1;
+    var buffer = _malloc(bufferSize);
+    stringToUTF8(str, buffer, bufferSize);
+    return buffer;
   },
   //#endregion
 };

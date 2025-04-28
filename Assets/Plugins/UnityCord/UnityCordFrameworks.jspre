@@ -5666,6 +5666,7 @@
       "applications.entitlements",
       "activities.read",
       "activities.write",
+      "activities.invites.write",
       "relationships.read",
       "relationships.write",
       "voice",
@@ -5679,7 +5680,9 @@
       "gateway.connect",
       "account.global_name.update",
       "payment_sources.country_code",
-      "sdk.social_layer"
+      "sdk.social_layer_presence",
+      "sdk.social_layer",
+      "lobbies.write"
     ]).or(z.literal(-1)).default(-1))),
     expires: z.string(),
     application: z.object({
@@ -5699,7 +5702,10 @@
       avatar: z.union([z.string(), z.null()]).optional(),
       flags: z.number(),
       bot: z.boolean(),
-      avatar_decoration_data: z.union([z.object({ asset: z.string(), skuId: z.string().optional() }), z.null()]).optional(),
+      avatar_decoration_data: z.union([
+        z.object({ asset: z.string(), skuId: z.string().optional(), expiresAt: z.number().optional() }),
+        z.null()
+      ]).optional(),
       premium_type: z.union([z.number(), z.null()]).optional(),
       nickname: z.string().optional()
     }))
@@ -5707,6 +5713,7 @@
   const ShareInteractionRequestSchema = z.object({
     command: z.string(),
     content: z.string().max(2e3).optional(),
+    require_launch_channel: z.boolean().optional(),
     preview_image: z.object({ height: z.number(), url: z.string(), width: z.number() }).optional(),
     components: z.array(z.object({
       type: z.literal(1),
@@ -5718,12 +5725,100 @@
       })).max(5).optional()
     })).optional()
   });
+  const ShareInteractionResponseSchema = z.object({ success: z.boolean() });
   const ShareLinkRequestSchema = z.object({
-    referrer_id: z.string().max(64).optional(),
     custom_id: z.string().max(64).optional(),
-    message: z.string().max(1e3)
+    message: z.string().max(1e3),
+    link_id: z.string().max(64).optional()
   });
-  const ShareLinkResponseSchema = z.object({ success: z.boolean() });
+  const ShareLinkResponseSchema = z.object({
+    success: z.boolean(),
+    didCopyLink: z.boolean(),
+    didSendMessage: z.boolean()
+  });
+  const GetRelationshipsResponseSchema = z.object({
+    relationships: z.array(z.object({
+      type: z.number(),
+      user: z.object({
+        id: z.string(),
+        username: z.string(),
+        global_name: z.union([z.string(), z.null()]).optional(),
+        discriminator: z.string(),
+        avatar: z.union([z.string(), z.null()]).optional(),
+        flags: z.number(),
+        bot: z.boolean(),
+        avatar_decoration_data: z.union([
+          z.object({ asset: z.string(), skuId: z.string().optional(), expiresAt: z.number().optional() }),
+          z.null()
+        ]).optional(),
+        premium_type: z.union([z.number(), z.null()]).optional()
+      }),
+      presence: z.object({
+        status: z.string(),
+        activity: z.union([
+          z.object({
+            session_id: z.string().optional(),
+            type: z.number().optional(),
+            name: z.string(),
+            url: z.union([z.string(), z.null()]).optional(),
+            application_id: z.string().optional(),
+            state: z.string().optional(),
+            details: z.string().optional(),
+            emoji: z.union([
+              z.object({
+                name: z.string(),
+                id: z.union([z.string(), z.null()]).optional(),
+                animated: z.union([z.boolean(), z.null()]).optional()
+              }),
+              z.null()
+            ]).optional(),
+            assets: z.object({
+              large_image: z.string().optional(),
+              large_text: z.string().optional(),
+              small_image: z.string().optional(),
+              small_text: z.string().optional()
+            }).optional(),
+            timestamps: z.object({ start: z.number().optional(), end: z.number().optional() }).optional(),
+            party: z.object({
+              id: z.string().optional(),
+              size: z.array(z.number()).min(2).max(2).optional(),
+              privacy: z.number().optional()
+            }).optional(),
+            secrets: z.object({ match: z.string().optional(), join: z.string().optional() }).optional(),
+            sync_id: z.string().optional(),
+            created_at: z.number().optional(),
+            instance: z.boolean().optional(),
+            flags: z.number().optional(),
+            metadata: z.object({}).optional(),
+            platform: z.string().optional(),
+            supported_platforms: z.array(z.string()).optional(),
+            buttons: z.array(z.string()).optional(),
+            hangStatus: z.string().optional()
+          }),
+          z.null()
+        ]).optional()
+      }).optional()
+    }))
+  });
+  const InviteUserEmbeddedRequestSchema = z.object({
+    user_id: z.string(),
+    content: z.string().min(0).max(1024).optional()
+  });
+  const GetUserRequestSchema = z.object({ id: z.string().max(64) });
+  const GetUserResponseSchema = z.union([
+    z.object({
+      id: z.string(),
+      username: z.string(),
+      global_name: z.union([z.string(), z.null()]).optional(),
+      discriminator: z.string(),
+      avatar: z.union([z.string(), z.null()]).optional(),
+      flags: z.number(),
+      bot: z.boolean(),
+      avatar_decoration_data: z.union([z.object({ asset: z.string(), skuId: z.string().optional(), expiresAt: z.number().optional() }), z.null()]).optional(),
+      premium_type: z.union([z.number(), z.null()]).optional()
+    }),
+    z.null()
+  ]);
   var Command;
   (function(Command2) {
     Command2["INITIATE_IMAGE_UPLOAD"] = "INITIATE_IMAGE_UPLOAD";
@@ -5732,6 +5827,9 @@
     Command2["GET_ACTIVITY_INSTANCE_CONNECTED_PARTICIPANTS"] = "GET_ACTIVITY_INSTANCE_CONNECTED_PARTICIPANTS";
     Command2["SHARE_INTERACTION"] = "SHARE_INTERACTION";
     Command2["SHARE_LINK"] = "SHARE_LINK";
+    Command2["GET_RELATIONSHIPS"] = "GET_RELATIONSHIPS";
+    Command2["INVITE_USER_EMBEDDED"] = "INVITE_USER_EMBEDDED";
+    Command2["GET_USER"] = "GET_USER";
   })(Command || (Command = {}));
   const emptyResponseSchema = z.object({}).optional().nullable();
   const emptyRequestSchema = z.void();
@@ -5754,11 +5852,23 @@
     },
     [Command.SHARE_INTERACTION]: {
       request: ShareInteractionRequestSchema,
-      response: emptyResponseSchema
+      response: ShareInteractionResponseSchema
     },
     [Command.SHARE_LINK]: {
       request: ShareLinkRequestSchema,
       response: ShareLinkResponseSchema
+    },
+    [Command.GET_RELATIONSHIPS]: {
+      request: emptyRequestSchema,
+      response: GetRelationshipsResponseSchema
+    },
+    [Command.INVITE_USER_EMBEDDED]: {
+      request: InviteUserEmbeddedRequestSchema,
+      response: emptyResponseSchema
+    },
+    [Command.GET_USER]: {
+      request: GetUserRequestSchema,
+      response: GetUserResponseSchema
     }
   };
   const DISPATCH = "DISPATCH";
@@ -5796,6 +5906,9 @@
     Commands2["INITIATE_IMAGE_UPLOAD"] = "INITIATE_IMAGE_UPLOAD";
     Commands2["GET_ACTIVITY_INSTANCE_CONNECTED_PARTICIPANTS"] = "GET_ACTIVITY_INSTANCE_CONNECTED_PARTICIPANTS";
     Commands2["SHARE_LINK"] = "SHARE_LINK";
+    Commands2["GET_RELATIONSHIPS"] = "GET_RELATIONSHIPS";
+    Commands2["INVITE_USER_EMBEDDED"] = "INVITE_USER_EMBEDDED";
+    Commands2["GET_USER"] = "GET_USER";
   })(Commands$1 || (Commands$1 = {}));
   const ReceiveFramePayload = objectType({
     cmd: stringType(),
@@ -5805,6 +5918,7 @@
   }).passthrough();
   const ScopesObject = Object.assign(Object.assign({}, AuthenticateResponseSchema.shape.scopes.element.overlayType._def.innerType.options[0].Values), { UNHANDLED: -1 });
   const Scopes = zodCoerceUnhandledValue(ScopesObject);
+  const Relationship = GetRelationshipsResponseSchema.shape.relationships.element;
   const User = objectType({
     id: stringType(),
     username: stringType(),
@@ -6295,6 +6409,7 @@
     PresenceUpdate,
     Reaction,
     ReceiveFramePayload,
+    Relationship,
     Role,
     Scopes,
     ScopesObject,
@@ -6328,6 +6443,7 @@
     Events2["ENTITLEMENT_CREATE"] = "ENTITLEMENT_CREATE";
     Events2["THERMAL_STATE_UPDATE"] = "THERMAL_STATE_UPDATE";
     Events2["ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE"] = "ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE";
+    Events2["RELATIONSHIP_UPDATE"] = "RELATIONSHIP_UPDATE";
   })(Events || (Events = {}));
   const DispatchEventFrame = ReceiveFramePayload.extend({
     evt: nativeEnumType(Events),
@@ -6486,6 +6602,12 @@
           participants: GetActivityInstanceConnectedParticipantsResponseSchema.shape.participants
         })
       })
+    },
+    [Events.RELATIONSHIP_UPDATE]: {
+      payload: DispatchEventFrame.extend({
+        evt: literalType(Events.RELATIONSHIP_UPDATE),
+        data: Relationship
+      })
     }
   };
   function assertUnreachable(_x, runtimeError) {
@@ -6623,6 +6745,9 @@
       case Commands$1.OPEN_SHARE_MOMENT_DIALOG:
       case Commands$1.GET_ACTIVITY_INSTANCE_CONNECTED_PARTICIPANTS:
       case Commands$1.SHARE_LINK:
+      case Commands$1.GET_RELATIONSHIPS:
+      case Commands$1.INVITE_USER_EMBEDDED:
+      case Commands$1.GET_USER:
         const { response } = Schemas[cmd];
         return response.parse(data);
       default:
@@ -6786,6 +6911,9 @@
   const initiateImageUpload = schemaCommandFactory(Command.INITIATE_IMAGE_UPLOAD);
   const getChannel = (sendCommand) => commandFactory(sendCommand, Commands$1.GET_CHANNEL, GetChannelResponse);
   const getInstanceConnectedParticipants = schemaCommandFactory(Command.GET_ACTIVITY_INSTANCE_CONNECTED_PARTICIPANTS);
+  const getRelationships = schemaCommandFactory(Command.GET_RELATIONSHIPS);
+  const inviteUserEmbedded = schemaCommandFactory(Command.INVITE_USER_EMBEDDED);
+  const getUser = schemaCommandFactory(Command.GET_USER);
   function commands(sendCommand) {
     return {
       authenticate: authenticate(sendCommand),
@@ -6807,7 +6935,10 @@
       startPurchase: startPurchase(sendCommand),
       userSettingsGetLocale: userSettingsGetLocale(sendCommand),
       initiateImageUpload: initiateImageUpload(sendCommand),
-      getInstanceConnectedParticipants: getInstanceConnectedParticipants(sendCommand)
+      getInstanceConnectedParticipants: getInstanceConnectedParticipants(sendCommand),
+      getRelationships: getRelationships(sendCommand),
+      inviteUserEmbedded: inviteUserEmbedded(sendCommand),
+      getUser: getUser(sendCommand)
     };
   }
   class SDKError extends Error {
@@ -6837,7 +6968,7 @@
       _consoleMethod.apply(_console, args);
     };
   }
-  var version = "1.9.0";
+  var version = "2.0.0";
   var randomUUID = typeof crypto !== "undefined" && crypto.randomUUID && crypto.randomUUID.bind(crypto);
   var native = {
     randomUUID
@@ -9378,11 +9509,61 @@
     }),
     getChannelPermissions: () => Promise.resolve({ permissions: bigInt(1234567890) }),
     openShareMomentDialog: () => Promise.resolve(null),
-    shareLink: () => Promise.resolve({ success: false }),
+    shareLink: () => Promise.resolve({ success: false, didSendMessage: false, didCopyLink: false }),
     initiateImageUpload: () => Promise.resolve({
       image_url: "https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b52aa9e99b832574a53_full_logo_blurple_RGB.png"
     }),
-    getInstanceConnectedParticipants: () => Promise.resolve({ participants: [] })
+    getInstanceConnectedParticipants: () => Promise.resolve({ participants: [] }),
+    getRelationships: () => Promise.resolve({
+      relationships: [
+        {
+          type: 1,
+          user: {
+            username: "mock_friend_username",
+            flags: 0,
+            bot: false,
+            discriminator: "mock_friend_discriminator",
+            id: "mock_friend_id_1",
+            avatar: null
+          }
+        },
+        {
+          type: 1,
+          user: {
+            username: "mock_friend_username_with_nickname",
+            flags: 0,
+            bot: false,
+            discriminator: "mock_friend_discriminator_with_nickname",
+            id: "mock_friend_id_2",
+            avatar: null
+          },
+          nickname: "mock_friend_nickname_for_user"
+        },
+        {
+          type: 1,
+          user: {
+            username: "mock_friend_username_with_since",
+            flags: 0,
+            bot: false,
+            discriminator: "mock_friend_discriminator_with_since",
+            id: "mock_friend_id_3",
+            avatar: null
+          },
+          since: "2021-06-29T00:32:37.180813+00:00"
+        }
+      ]
+    }),
+    inviteUserEmbedded: () => Promise.resolve(null),
+    getUser: () => {
+      return Promise.resolve({
+        username: "mock_friend_username",
+        flags: 0,
+        bot: false,
+        discriminator: "mock_friend_discriminator",
+        id: "mock_friend_id_1",
+        avatar: null
+      });
+    }
   };
   function __rest(s, e) {
     var t = {};

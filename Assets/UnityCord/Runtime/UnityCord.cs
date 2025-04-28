@@ -13,14 +13,12 @@ namespace UnityCord
         private static Dictionary<string, Delegate> Callbacks = new();
 
         public DiscordSDK()
-        {
-        }
+        {}
 
         public DiscordSDK(string clientId)
         {
             DiscordSDKInternal(clientId);
         }
-
 
         public void Ready(Action callback)
         {
