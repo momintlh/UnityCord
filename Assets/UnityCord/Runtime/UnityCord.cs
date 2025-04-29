@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using AOT;
-using Playroom;
 
 namespace UnityCord
 {
@@ -12,6 +11,9 @@ namespace UnityCord
     public class DiscordSDK
     {
         private static Dictionary<string, Delegate> Callbacks = new();
+
+        public DiscordSDK()
+        {}
 
         public DiscordSDK(string clientId)
         {
@@ -24,6 +26,7 @@ namespace UnityCord
             ReadyInternal(InvokeCallback);
         }
 
+        // TODO: make a proper callback handler
         [MonoPInvokeCallback(typeof(Action))]
         private static void InvokeCallback()
         {
