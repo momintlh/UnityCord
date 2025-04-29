@@ -28,17 +28,29 @@ var LibraryMyPlugin = {
   //#endregion
 
   //#region Commands
-  AuthorizeInternal : function (authorizeInput , callback) 
-  {
-    // TODO: Parse authorizeInput JSON.
+  OpenExternalLinkInternal: function (url, callback) {
+    url = UTF8ToString(url);
+    globals.discordSdK.commands.openExternalLink({
+      url: url
+    }).then(({opened}) => {
+      console.log(`[JSLIB] URL ${url} opened? ${opened}`);
+    });
+  },
 
-    globals.discordSdK.commands.authorize({client_id: "1234", scope: ["activities.read"], response_type: "code" ,code_challenge: "123", state: "123", code_challenge_method: "S256", prompt:"none"}).then(result => {
-      // TODO: convert result to C# string 
-      {{{ makeDynCall("vi", "callback") }}}(result);
+  OpenInviteInternal(callback) {
+    globals.discordSdK.commands.openInviteDialog().then( () => {
+      {{{ makeDynCall("v", 'callback') }}}()
+    });
+  },
+
+  GetUserInternal(userId, callback) {
+    userId = UTF8ToString(userId);
+    globals.discordSdK.commands.getUser({id: userId}).then(result => {
+      console.log(`[JSLIB]: Result in GetUser: ${result}`)
+      {{{ makeDynCall('vi', 'callback') }}}(_ConvertString(JSON.stringify(result)))
     })
   },
   //#endregion
-
 
   //#region Utils
   PatchUrlMappingsInternal: function (prefix, target) {
@@ -68,6 +80,14 @@ var LibraryMyPlugin = {
     } catch (error) {
       console.error(`[JSLIB] error AttemptRemapInternal: ${error}`);
     }
+  },
+
+  // Convert to C# string
+  ConvertString: function (str) {
+    var bufferSize = lengthBytesUTF8(str) + 1;
+    var buffer = _malloc(bufferSize);
+    stringToUTF8(str, buffer, bufferSize);
+    return buffer;
   },
   //#endregion
 };

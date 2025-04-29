@@ -17,6 +17,14 @@ declare global {
 
   // Other global declarations for your jslib
   function UTF8ToString(ptr: number): string;
+  // JS to C#
+  function stringToUTF8(str: string, buffer: number, bufferSize: number);
+
+  function lengthBytesUTF8(str: string): number
+  function _malloc(bytes: number)
+  function ConvertString(str: string): number
+  function _ConvertString(str: string): number
+
 
   const LibraryManager: {
     library: any;

@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using UBB;
+using UnityCord;
+using System.Runtime.InteropServices;
 
 
 namespace Playroom
@@ -338,6 +340,18 @@ namespace Playroom
             _playroomService.ClearTurns(callback);
         }
 
+        #endregion
+
+
+        #region Discord
+        public DiscordSDK GetDiscordClient()
+        {
+            GetDiscordClientInternal();
+            return new DiscordSDK(); 
+        }
+
+        [DllImport("__Internal")]
+        public static extern void GetDiscordClientInternal();
         #endregion
     }
 }
