@@ -1,6 +1,6 @@
 {
   "name": "com.momintlh.unitycord",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "displayName": "UnityCord",
   "description": "UnityCord provides bindings for discord embedded sdk",
   "documentationUrl": "https://github.com/momintlh/unitycord",
