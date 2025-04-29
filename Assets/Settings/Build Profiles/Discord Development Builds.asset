@@ -19,9 +19,7 @@ MonoBehaviour:
   m_PlatformBuildProfile:
     rid: 6733561298133450840
   m_OverrideGlobalSceneList: 1
-  m_Scenes:
-  - m_enabled: 1
-    m_path: Assets/UnityCord/Examples/Scenes/GettingStartedWithPlayroom.unity
+  m_Scenes: []
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings:

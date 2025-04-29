@@ -15,7 +15,7 @@
   "samples": [
     {
       "displayName": "UnityCord Examples",
-      "description": "Demo scenes and usage samples for UnityCord",
+      "description": "Getting started examples",
       "path": "Samples~/Examples"
     }
   ]
