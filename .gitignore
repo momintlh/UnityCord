@@ -80,5 +80,5 @@ Assets/msedgedriver.exe.meta
 Assets/PlayroomKit/node_modules
 Assets/PlayroomKit/node_modules.meta
 
-Assets/UnityCord/node_modules
-Assets/UnityCord/node_modules.meta
+Assets/UnityCord/Editor/node_modules
+Assets/UnityCord/Editor/node_modules.meta
