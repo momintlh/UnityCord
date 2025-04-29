@@ -28,15 +28,6 @@ var LibraryMyPlugin = {
   //#endregion
 
   //#region Commands
-  AuthorizeInternal : function (authorizeInput , callback) {
-    // TODO: Parse authorizeInput JSON.
-
-    globals.discordSdK.commands.authorize({client_id: "1234", scope: ["activities.read"], response_type: "code" ,code_challenge: "123", state: "123", code_challenge_method: "S256", prompt:"none"}).then(result => {
-      // TODO: convert result to C# string 
-      {{{ makeDynCall("vi", "callback") }}}(result);
-    })
-  },
-
   OpenExternalLinkInternal: function (url, callback) {
     url = UTF8ToString(url);
     globals.discordSdK.commands.openExternalLink({
@@ -46,11 +37,17 @@ var LibraryMyPlugin = {
     });
   },
 
+  OpenInviteInternal(callback) {
+    globals.discordSdK.commands.openInviteDialog().then( () => {
+      {{{ makeDynCall("v", 'callback') }}}()
+    });
+  },
+
   GetUserInternal(userId, callback) {
     userId = UTF8ToString(userId);
     globals.discordSdK.commands.getUser({id: userId}).then(result => {
       console.log(`[JSLIB]: Result in GetUser: ${result}`)
-      {{{ makeDynCall('vi', 'callback') }}}(_ConvertString(result.avatar))
+      {{{ makeDynCall('vi', 'callback') }}}(_ConvertString(JSON.stringify(result)))
     })
   },
   //#endregion
@@ -85,6 +82,7 @@ var LibraryMyPlugin = {
     }
   },
 
+  // Convert to C# string
   ConvertString: function (str) {
     var bufferSize = lengthBytesUTF8(str) + 1;
     var buffer = _malloc(bufferSize);

@@ -1,16 +1,22 @@
 {
-  "type": "module",
-  "devDependencies": {
-    "typescript": "^5.8.2",
-    "vite": "^6.2.1",
-    "vite-plugin-static-copy": "^2.3.0"
+  "name": "com.momintlh.unitycord",
+  "version": "0.0.2",
+  "displayName": "UnityCord",
+  "description": "UnityCord provides bindings for discord embedded sdk",
+  "documentationUrl": "https://github.com/momintlh/unitycord",
+  "keywords": [
+    "Discord",
+    "Discord Activity",
+    "Embedded App SDK"
+  ],
+  "author": {
+    "name": "Talha Momin"
   },
-  "scripts": {
-    "postinstall": "npm run build",
-    "build": "vite build --emptyOutDir",
-    "copy:bridge": "vite build --config vite.copy.config.js"
-  },
-  "dependencies": {
-    "@discord/embedded-app-sdk": "^2.0.0"
-  }
+  "samples": [
+    {
+      "displayName": "UnityCord Examples",
+      "description": "Demo scenes and usage samples for UnityCord",
+      "path": "Samples~/Examples"
+    }
+  ]
 }

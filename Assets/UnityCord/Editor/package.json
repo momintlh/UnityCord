@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^5.8.2",
+    "vite": "^6.2.1",
+    "vite-plugin-static-copy": "^2.3.0"
+  },
+  "scripts": {
+    "postinstall": "npm run build",
+    "build": "vite build --emptyOutDir",
+    "copy:bridge": "vite build --config vite.copy.config.js"
+  },
+  "dependencies": {
+    "@discord/embedded-app-sdk": "^2.0.0"
+  }
+}
