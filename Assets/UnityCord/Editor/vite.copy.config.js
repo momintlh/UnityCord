@@ -40,6 +40,6 @@ export default defineConfig({
     rollupOptions: {
       input: resolve(__dirname, 'src/empty.ts')
     },
-    outDir: '../../Assets/Plugins/UnityCord'
+    outDir: '../../Plugins/UnityCord'
   },
 });

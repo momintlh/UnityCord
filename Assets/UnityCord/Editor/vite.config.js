@@ -24,7 +24,7 @@ export default defineConfig({
             fileName: (format) => `UnityCordFrameworks.jspre`,
             formats: ['umd']
         },
-        outDir: '../../Assets/Plugins/UnityCord',
+        outDir: '../../Plugins/UnityCord',
         minify: false,
         rollupOptions: {}
     },
