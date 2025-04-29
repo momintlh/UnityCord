@@ -1,20 +1,30 @@
 using System.Collections.Generic;
 using System;
+using AOT;
 
-public class CallbackHandler
+namespace UnityCord
 {
-    private static Dictionary<string, Delegate> callbacks = new();
-
-    public static void RegisterCallback(string key, Action callback)
+    public class CallbackHandler
     {
-        callbacks.TryAdd(key, callback);
-    }
+        private static Dictionary<string, Delegate> callbacks = new();
 
-    public static void InvokeCallback(string key)
-    {
-        if (callbacks.TryGetValue(key, out Delegate callback))
+        public static void RegisterCallback(string key, Delegate callback)
         {
-            (callback as Action).Invoke();
+            callbacks.TryAdd(key, callback);
+        }
+
+        public static void InvokeCallback(string key)
+        {
+            if (callbacks.TryGetValue(key, out Delegate callback))
+            {
+                (callback as Action).Invoke();
+            }
+        }
+
+        [MonoPInvokeCallback(typeof(Action<string>))]
+        public static void InvokeAction(string key)
+        {
+           InvokeCallback(key);
         }
     }
 }

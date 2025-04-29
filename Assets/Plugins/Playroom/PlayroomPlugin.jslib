@@ -19,12 +19,13 @@ mergeInto(LibraryManager.library, {
 
     function OnLaunchCallBack() {
       var key = _ConvertString(onLaunchCallBackKey);
-      {{{makeDynCall('vi', 'onLaunchCallBack')}}}(key)
+      {{{ makeDynCall('vi', 'onLaunchCallBack') }}} (key)
+      
     }
 
     function OnDisconnectCallback() {
       var key = _ConvertString(onQuitInternalCallbackKey);
-      {{{makeDynCall('vi', 'onDisconnectCallback')}}}(key)
+      {{{ makeDynCall('vi', 'onDisconnectCallback') }}} (key)
     }
     this.onPlayerJoinCallBacks = {};
     var options = optionsJson ? JSON.parse(UTF8ToString(optionsJson)) : {};
@@ -45,7 +46,7 @@ mergeInto(LibraryManager.library, {
           stringToUTF8(id, buffer, bufferSize);
 
           player.onQuit(() => {
-            {{{makeDynCall('vi', 'onQuitInternalCallback')}}}(buffer)
+            {{{ makeDynCall('vi', 'onQuitInternalCallback') }}} (buffer)
           });
         });
       })
@@ -54,7 +55,7 @@ mergeInto(LibraryManager.library, {
         var bufferSize = lengthBytesUTF8(jsonString) + 1;
         var buffer = _malloc(bufferSize);
         stringToUTF8(jsonString, buffer, bufferSize);
-        {{{makeDynCall('vi', 'onError')}}}(buffer)
+        {{{ makeDynCall('vi', 'onError') }}} (buffer)
       });
   },
 
@@ -164,7 +165,7 @@ mergeInto(LibraryManager.library, {
         var buffer = _malloc(bufferSize);
         stringToUTF8(id, buffer, bufferSize);
 
-        {{{makeDynCall('vi', 'functionPtr')}}}(buffer)
+        {{{ makeDynCall('vi', 'functionPtr') }}} (buffer)
       });
     } catch (error) {
       console.log(error);
@@ -725,7 +726,7 @@ mergeInto(LibraryManager.library, {
 
     Playroom.onDisconnect((e) => {
       console.log(`Disconnected!`, e.code, e.reason);
-      {{{makeDynCall('v', 'callback')}}}()
+      {{{ makeDynCall('v', 'callback') }}} ()
     });
   },
 
@@ -745,7 +746,7 @@ mergeInto(LibraryManager.library, {
 
         var key = _ConvertString(stateKey);
 
-        {{{makeDynCall('vii', 'onStateSetCallback')}}}(key, stringToNewUTF8(stateVal))
+        {{{ makeDynCall('vii', 'onStateSetCallback') }}} (key, stringToNewUTF8(stateVal))
       })
       .catch((error) => {
         console.error("Error Waiting for state:", error);
@@ -781,7 +782,7 @@ mergeInto(LibraryManager.library, {
     stateKey = UTF8ToString(stateKey);
     Playroom.waitForPlayerState(playerState, stateKey)
       .then((stateVal) => {
-        {{{makeDynCall('vi', 'onStateSetCallback')}}}(stringToNewUTF8(stateVal))
+        {{{ makeDynCall('vi', 'onStateSetCallback') }}} (stringToNewUTF8(stateVal))
       })
       .catch((error) => {
         console.error("Error waiting for state:", error);
@@ -813,7 +814,7 @@ mergeInto(LibraryManager.library, {
     playerState
       .kick()
       .then(() => {
-        {{{makeDynCall('v', 'onKickCallback')}}}()
+        {{{ makeDynCall('v', 'onKickCallback') }}} ()
       })
       .catch((error) => {
         console.error("Error kicking player:", error);
@@ -831,7 +832,7 @@ mergeInto(LibraryManager.library, {
     var keys = keysToExclude ? JSON.parse(UTF8ToString(keysToExclude)) : [];
     Playroom.resetStates(keys)
       .then(() => {
-        {{{makeDynCall('v', 'onStatesReset')}}}()
+        {{{ makeDynCall('v', 'onStatesReset') }}} ()
       })
       .catch((error) => {
         console.error("Error resetting states:", error);
@@ -850,7 +851,7 @@ mergeInto(LibraryManager.library, {
     var keys = keysToExclude ? JSON.parse(UTF8ToString(keysToExclude)) : [];
     Playroom.resetPlayersStates(keys)
       .then(() => {
-        {{{makeDynCall('v', 'onStatesReset')}}}()
+        {{{ makeDynCall('v', 'onStatesReset') }}} ()
       })
       .catch((error) => {
         console.error("Error resetting players states:", error);
@@ -878,7 +879,7 @@ mergeInto(LibraryManager.library, {
 
       var dataJson = JSON.stringify(combinedData);
 
-      {{{makeDynCall('vi', 'callback')}}}(stringToNewUTF8(dataJson));
+      {{{ makeDynCall('vi', 'callback') }}} (stringToNewUTF8(dataJson));
 
       return onResponseReturn;
     }
@@ -908,7 +909,7 @@ mergeInto(LibraryManager.library, {
 
       function onResponseCallback(responseData) {
         // console.log("Response received: ", responseData);
-        {{{makeDynCall('v', 'callbackOnResponse')}}}()
+        {{{ makeDynCall('v', 'callbackOnResponse') }}} ()
       }
 
       Playroom.RPC.call(UTF8ToString(name), data, mode, onResponseCallback);
@@ -928,7 +929,7 @@ mergeInto(LibraryManager.library, {
     Playroom.startMatchmaking()
       .then(() => {
         console.log(`Player has joined a public room`);
-        {{{makeDynCall('v', 'callback')}}}()
+        {{{ makeDynCall('v', 'callback') }}} ()
       })
       .catch((error) => {
         console.error(`JS: Error starting match making ${error}`);
@@ -983,7 +984,7 @@ mergeInto(LibraryManager.library, {
 
       data = JSON.stringify(data);
       var key = _ConvertString(dataKey);
-      {{{makeDynCall('vii', 'onGetPersistentDataCallback')}}}(key, stringToNewUTF8(data))
+      {{{ makeDynCall('vii', 'onGetPersistentDataCallback') }}} (key, stringToNewUTF8(data))
     }).catch((error) => {
       console.error("Error getting persistent data:", error);
     });
@@ -1028,7 +1029,7 @@ mergeInto(LibraryManager.library, {
 
     Playroom.getAllTurns().then((data) => {
       dataJson = JSON.stringify(data);
-      {{{makeDynCall('vi', 'callback')}}}(stringToNewUTF8(dataJson));
+      {{{ makeDynCall('vi', 'callback') }}} (stringToNewUTF8(dataJson));
 
     }).catch((error) => {
       console.error("[JS]: Failed to get turns:", error);
@@ -1049,7 +1050,7 @@ mergeInto(LibraryManager.library, {
       }
 
       dataJson = JSON.stringify(data);
-      {{{makeDynCall('vi', 'callback')}}}(stringToNewUTF8(dataJson));
+      {{{ makeDynCall('vi', 'callback') }}} (stringToNewUTF8(dataJson));
     }).catch((error) => {
       console.error("[JS]: Failed to get my turn data:", error);
     });
@@ -1064,7 +1065,7 @@ mergeInto(LibraryManager.library, {
     }
 
     Playroom.clearTurns().then(() => {
-      {{{makeDynCall('v', 'callback') } } };
+      {{{ makeDynCall('v', 'callback') }}};
     }).catch((error) => {
       console.error("[JS]: Failed to clear all turns:", error);
     });
@@ -1072,10 +1073,13 @@ mergeInto(LibraryManager.library, {
   //#endregion
 
   //#region Discord
+  //#region Discord
   GetDiscordClientInternal: function () {
     globals.discordSdK = Playroom.getDiscordClient();
   },
   //#endregion
+
+
 
   //#region Utils
   /**
@@ -1091,6 +1095,4 @@ mergeInto(LibraryManager.library, {
     return buffer;
   },
   //#endregion
-
-
 });

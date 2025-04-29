@@ -5,15 +5,15 @@ namespace UnityCord
 {
     public class Commands
     {
-        // TODO: change this to non static
         public static void OpenExternalLink(string url)
         {
             OpenExternalLinkInternal(url);
         }
-        
-        public static void GetUser(string userId, Action callback)
+
+        public static void OpenInviteDialog(Action callback)
         {
-            GetUserInternal(userId, callback);
+            CallbackHandler.RegisterCallback("invite", callback);
+            OpenInviteDialogInternal(CallbackHandler.InvokeAction);
         }
 
         #region Internals
@@ -21,8 +21,10 @@ namespace UnityCord
         private static extern void OpenExternalLinkInternal(string url);
 
         [DllImport("__Internal")]
+        private static extern void GetUserInternal(string id, Action<string> callback);
 
-        private static extern void GetUserInternal(string id, Action callback);
+        [DllImport("__Internal")]
+        private static extern void OpenInviteDialogInternal(Action<string> callback);
         #endregion
     }
 }

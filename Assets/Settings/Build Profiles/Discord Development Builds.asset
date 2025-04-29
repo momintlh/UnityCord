@@ -669,7 +669,7 @@ MonoBehaviour:
     - line: '|   webGLNameFilesAsHashes: 1'
     - line: '|   webGLShowDiagnostics: 0'
     - line: '|   webGLDataCaching: 1'
-    - line: '|   webGLDebugSymbols: 1'
+    - line: '|   webGLDebugSymbols: 2'
     - line: '|   webGLEmscriptenArgs: '
     - line: '|   webGLModulesDirectory: '
     - line: '|   webGLTemplate: PROJECT:DiscordTemplate'

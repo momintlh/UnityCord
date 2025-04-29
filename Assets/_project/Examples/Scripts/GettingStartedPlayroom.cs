@@ -14,6 +14,7 @@ namespace UnityCord
         [SerializeField] TextMeshProUGUI responseText;
         [SerializeField] Button APIButton;
         [SerializeField] Button ExternalURLButton;
+        [SerializeField] Button InviteButton;
 
         // Using Playroomkit for setting up discord auth and hosting the activity.
         PlayroomKit prk;
@@ -38,6 +39,16 @@ namespace UnityCord
                 Commands.OpenExternalLink("https://github.com/momintlh/unityCord");
 #endif
             });
+            InviteButton.onClick.AddListener(() =>
+            {
+                // #if UNITY_WEBGL && !UNITY_EDITOR
+                // Commands.InviteButton("https://github.com/momintlh/unityCord");
+                Commands.OpenInviteDialog(() =>
+                {
+                    Debug.LogWarning("Invite Dialog Callback Invoked");
+                });
+                // #endif
+            });
         }
 
         void Start()
@@ -58,7 +69,7 @@ namespace UnityCord
                     Debug.LogWarning("Discord SDK is ready through playroom woohoo!");
                     discordReady = true;
                     APIButton.interactable = true;
-                    ExternalURLButton.interactable = true;
+                    ExternalURLButton.interactable = true;  
                 });
             });
         }

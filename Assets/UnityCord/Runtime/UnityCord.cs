@@ -10,8 +10,6 @@ namespace UnityCord
     /// </summary>
     public class DiscordSDK
     {
-        private static Dictionary<string, Delegate> Callbacks = new();
-
         public DiscordSDK()
         {}
 
@@ -22,18 +20,8 @@ namespace UnityCord
 
         public void Ready(Action callback)
         {
-            Callbacks.Add("ready", callback);
-            ReadyInternal(InvokeCallback);
-        }
-
-        // TODO: make a proper callback handler
-        [MonoPInvokeCallback(typeof(Action))]
-        private static void InvokeCallback()
-        {
-            if (Callbacks.TryGetValue("ready", out Delegate del))
-            {
-                (del as Action)?.Invoke();
-            }
+            CallbackHandler.RegisterCallback("ready", callback);
+            ReadyInternal(CallbackHandler.InvokeAction);
         }
 
         #region Internals
@@ -41,7 +29,7 @@ namespace UnityCord
         private static extern void DiscordSDKInternal(string clientId);
 
         [DllImport("__Internal")]
-        private static extern void ReadyInternal(Action callback);
+        private static extern void ReadyInternal(Action<string> callback);
         #endregion
     }
 }

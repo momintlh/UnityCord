@@ -16,10 +16,11 @@ var LibraryMyPlugin = {
   //#endregion
 
   //#region Methods
-  ReadyInternal: function (callback) {
+  ReadyInternal: function (key, callback) {
     try {
       globals.discordSdK.ready().then(() => {
-        {{{ makeDynCall("v", "callback") }}}(null);
+        // prettier-ignore
+        {{{makeDynCall("vi", 'callback')}}}(key);
       });
     } catch (error) {
       console.error(`[JSLIB] error ReadyInternal: ${error}`);
@@ -30,25 +31,31 @@ var LibraryMyPlugin = {
   //#region Commands
   OpenExternalLinkInternal: function (url, callback) {
     url = UTF8ToString(url);
-    globals.discordSdK.commands.openExternalLink({
-      url: url
-    }).then(({opened}) => {
-      console.log(`[JSLIB] URL ${url} opened? ${opened}`);
-    });
+    globals.discordSdK.commands
+      .openExternalLink({
+        url: url,
+      })
+      .then(({ opened }) => {
+        console.log(`[JSLIB] URL ${url} opened? ${opened}`);
+      });
   },
 
-  OpenInviteInternal(callback) {
-    globals.discordSdK.commands.openInviteDialog().then( () => {
-      {{{ makeDynCall("v", 'callback') }}}()
-    });
+  OpenInviteDialogInternal: function(key, callback) {
+    try {
+      globals.discordSdK.commands.openInviteDialog().then(() => {
+        {{{makeDynCall("vi", 'callback')}}}(key);
+      });
+    } catch (error) {
+      console.error(`[JSLIB] Error in OpenInviteDialogInternal: ${error}`);
+    }
   },
 
-  GetUserInternal(userId, callback) {
+  GetUserInternal: function(userId, callback) {
     userId = UTF8ToString(userId);
-    globals.discordSdK.commands.getUser({id: userId}).then(result => {
-      console.log(`[JSLIB]: Result in GetUser: ${result}`)
-      {{{ makeDynCall('vi', 'callback') }}}(_ConvertString(JSON.stringify(result)))
-    })
+    globals.discordSdK.commands.getUser({ id: userId }).then((result) => {
+      console.log(`[JSLIB]: Result in GetUser: ${result}`);
+       {{{makeDynCall("vi", 'callback')}}}(result.avatar);
+    });
   },
   //#endregion
 
@@ -89,6 +96,7 @@ var LibraryMyPlugin = {
     stringToUTF8(str, buffer, bufferSize);
     return buffer;
   },
+
   //#endregion
 };
 

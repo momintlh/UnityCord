@@ -20,11 +20,10 @@ declare global {
   // JS to C#
   function stringToUTF8(str: string, buffer: number, bufferSize: number);
 
-  function lengthBytesUTF8(str: string): number
-  function _malloc(bytes: number)
-  function ConvertString(str: string): number
-  function _ConvertString(str: string): number
-
+  function lengthBytesUTF8(str: string): number;
+  function _malloc(bytes: number);
+  function ConvertString(str: string): number;
+  function _ConvertString(str: string): number;
 
   const LibraryManager: {
     library: any;
@@ -32,10 +31,13 @@ declare global {
 
   // {{{ makeDynCall('v', 'callback') }}}()
   type DynCallSignature = "v" | "vi" | "vii";
+  type ptrName = "callback";
+
   function makeDynCall(
     sig: DynCallSignature,
-    ptr: any
+    ptr: ptrName
   ): (...args: any[]) => any;
+
   function autoAddDeps(obj: any, key: string): void;
   function mergeInto(target: any, obj: any): void;
 }
