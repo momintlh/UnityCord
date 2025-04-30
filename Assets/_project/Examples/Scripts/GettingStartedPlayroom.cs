@@ -15,6 +15,7 @@ namespace UnityCord
         [SerializeField] Button APIButton;
         [SerializeField] Button ExternalURLButton;
         [SerializeField] Button InviteButton;
+        [SerializeField] Button ReadyTestButton;
 
         // Using Playroomkit for setting up discord auth and hosting the activity.
         PlayroomKit prk;
@@ -41,11 +42,16 @@ namespace UnityCord
             {
                 // #if UNITY_WEBGL && !UNITY_EDITOR
                 // Commands.InviteButton("https://github.com/momintlh/unityCord");
-                discordSDK.commands.OpenInviteDialog(() =>
-                {
-                    Debug.LogWarning("Invite Dialog Callback Invoked");
-                });
+                discordSDK.commands.OpenInviteDialog();
                 // #endif
+            });
+            ReadyTestButton.onClick.AddListener(() =>
+            {
+                discordSDK.Ready(() =>
+               {
+                   Debug.LogWarning("Discord SDK is ready through playroom woohoo!");
+                   discordReady = true;
+               });
             });
         }
 
@@ -60,14 +66,8 @@ namespace UnityCord
                 discord = true,
             }, () =>
             {
-                Debug.Log("Coin Inserted");
                 discordSDK = prk.GetDiscordClient();
-
-                discordSDK.Ready(() =>
-                {
-                    Debug.LogWarning("Discord SDK is ready through playroom woohoo!");
-                    discordReady = true;
-                });
+                Debug.LogWarning("Coin Inserted");
             });
         }
 

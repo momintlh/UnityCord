@@ -16,11 +16,12 @@ var LibraryMyPlugin = {
   //#endregion
 
   //#region Methods
-  ReadyInternal: function (key, callback) {
+  ReadyInternal: function (callback) {
     try {
       globals.discordSdK.ready().then(() => {
+        console.log("[JSLIB] discordsdk is ready")
         // prettier-ignore
-        {{{makeDynCall("vi", 'callback')}}}(key);
+        {{{ makeDynCall("v", "callback") }}}()
       });
     } catch (error) {
       console.error(`[JSLIB] error ReadyInternal: ${error}`);
@@ -29,7 +30,7 @@ var LibraryMyPlugin = {
   //#endregion
 
   //#region Commands
-  OpenExternalLinkInternal: function (url, callback) {
+  OpenExternalLinkInternal: function (url) {
     url = UTF8ToString(url);
     globals.discordSdK.commands
       .openExternalLink({
@@ -40,22 +41,16 @@ var LibraryMyPlugin = {
       });
   },
 
-  OpenInviteDialogInternal: function(key, callback) {
+  OpenInviteDialogInternal: function() {
     try {
       globals.discordSdK.commands.openInviteDialog().then(() => {
-        {{{makeDynCall("vi", 'callback')}}}(key);
+        console.log("[JSLIB] invite dialog opened")
+      }).catch(err => {
+        console.error("[JSLIB] OpenInviteDialogInternal error:", err);
       });
     } catch (error) {
       console.error(`[JSLIB] Error in OpenInviteDialogInternal: ${error}`);
     }
-  },
-
-  GetUserInternal: function(userId, callback) {
-    userId = UTF8ToString(userId);
-    globals.discordSdK.commands.getUser({ id: userId }).then((result) => {
-      console.log(`[JSLIB]: Result in GetUser: ${result}`);
-       {{{makeDynCall("vi", 'callback')}}}(result.avatar);
-    });
   },
   //#endregion
 

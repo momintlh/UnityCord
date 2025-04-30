@@ -1,5 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
+using AOT;
+using OpenQA.Selenium.DevTools.V85.IndexedDB;
+using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace UnityCord
 {
@@ -8,7 +14,10 @@ namespace UnityCord
     /// </summary>
     public class DiscordSDK
     {
+        private static Dictionary<string, Action> Callbacks = new();
+
         public Commands commands;
+
 
         public DiscordSDK()
         {
@@ -24,10 +33,20 @@ namespace UnityCord
 
         public void Ready(Action callback)
         {
-            if (!Utils.ValidateDiscord("`Ready` only works inside discord")) return;
+            if (!Utils.ValidateDiscord("(Ready) DiscordSDK only works inside discord")) return;
 
-            CallbackHandler.RegisterCallback("ready", callback);
-            ReadyInternal(CallbackHandler.InvokeAction);
+            Callbacks["ready"] = callback;
+
+            ReadyInternal(InvokeReadyCallback);
+        }
+
+        [MonoPInvokeCallback(typeof(Action))]
+        private static void InvokeReadyCallback()
+        {
+            if (Callbacks.TryGetValue("ready", out Action action))
+            {
+                action?.Invoke();
+            }
         }
 
         #region Internals
@@ -35,7 +54,7 @@ namespace UnityCord
         private static extern void DiscordSDKInternal(string clientId);
 
         [DllImport("__Internal")]
-        private static extern void ReadyInternal(Action<string> callback);
+        private static extern void ReadyInternal(Action callback);
         #endregion
     }
 }

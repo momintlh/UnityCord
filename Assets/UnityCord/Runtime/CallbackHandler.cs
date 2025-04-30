@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System;
 using AOT;
+using UnityEngine;
 
 namespace UnityCord
 {
@@ -21,10 +22,22 @@ namespace UnityCord
             }
         }
 
+        public static Delegate GetCallback(string key)
+        {
+            if (callbacks.TryGetValue(key, out Delegate callback))
+            {
+                return callback;
+            }
+            return null;
+        }
+
+
+
         [MonoPInvokeCallback(typeof(Action<string>))]
         public static void InvokeAction(string key)
         {
-           InvokeCallback(key);
+            Debug.LogWarning($"[Unity]: key is {key}");
+            InvokeCallback(key);
         }
     }
 }
