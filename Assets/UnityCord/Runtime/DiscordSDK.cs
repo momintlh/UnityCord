@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using AOT;
 
 namespace UnityCord
 {
@@ -10,16 +8,24 @@ namespace UnityCord
     /// </summary>
     public class DiscordSDK
     {
+        public Commands commands;
+
         public DiscordSDK()
-        {}
+        {
+            commands = new();
+        }
 
         public DiscordSDK(string clientId)
         {
+            commands = new();
+            if (!Utils.ValidateDiscord("DiscordSDK only works inside discord, mocking is currently not supported")) return;
             DiscordSDKInternal(clientId);
         }
 
         public void Ready(Action callback)
         {
+            if (!Utils.ValidateDiscord("`Ready` only works inside discord")) return;
+
             CallbackHandler.RegisterCallback("ready", callback);
             ReadyInternal(CallbackHandler.InvokeAction);
         }

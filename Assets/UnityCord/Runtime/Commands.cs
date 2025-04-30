@@ -5,13 +5,17 @@ namespace UnityCord
 {
     public class Commands
     {
-        public static void OpenExternalLink(string url)
+        public void OpenExternalLink(string url)
         {
+            if (!Utils.ValidateDiscord("OpenExternalLink only works inside dicord")) return;
+
             OpenExternalLinkInternal(url);
         }
 
-        public static void OpenInviteDialog(Action callback)
+        public void OpenInviteDialog(Action callback)
         {
+            if (!Utils.ValidateDiscord("OpenInviteDialog only works inside dicord")) return;
+
             CallbackHandler.RegisterCallback("invite", callback);
             OpenInviteDialogInternal(CallbackHandler.InvokeAction);
         }

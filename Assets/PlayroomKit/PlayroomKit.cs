@@ -346,8 +346,10 @@ namespace Playroom
         #region Discord
         public DiscordSDK GetDiscordClient()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
             GetDiscordClientInternal();
-            return new DiscordSDK(); 
+#endif
+            return new DiscordSDK();
         }
 
         [DllImport("__Internal")]

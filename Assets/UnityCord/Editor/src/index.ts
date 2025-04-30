@@ -44,6 +44,8 @@ var LibraryMyPlugin = {
     try {
       globals.discordSdK.commands.openInviteDialog().then(() => {
         {{{makeDynCall("vi", 'callback')}}}(key);
+      }).catch(err => {
+        console.error("[JSLIB] OpenInviteDialogInternal error:", err);
       });
     } catch (error) {
       console.error(`[JSLIB] Error in OpenInviteDialogInternal: ${error}`);

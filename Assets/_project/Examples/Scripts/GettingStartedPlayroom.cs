@@ -26,24 +26,22 @@ namespace UnityCord
             new Mapping() { Prefix = "json", Target = "jsonplaceholder.typicode.com", }
         };
 
+        private DiscordSDK discordSDK;
+
         void Awake()
         {
             prk = new();
-            APIButton.interactable = false;
-            ExternalURLButton.interactable = false;
 
             APIButton.onClick.AddListener(APICall);
             ExternalURLButton.onClick.AddListener(() =>
             {
-#if UNITY_WEBGL && !UNITY_EDITOR
-                Commands.OpenExternalLink("https://github.com/momintlh/unityCord");
-#endif
+                discordSDK.commands.OpenExternalLink("https://github.com/momintlh/unityCord");
             });
             InviteButton.onClick.AddListener(() =>
             {
                 // #if UNITY_WEBGL && !UNITY_EDITOR
                 // Commands.InviteButton("https://github.com/momintlh/unityCord");
-                Commands.OpenInviteDialog(() =>
+                discordSDK.commands.OpenInviteDialog(() =>
                 {
                     Debug.LogWarning("Invite Dialog Callback Invoked");
                 });
@@ -53,9 +51,8 @@ namespace UnityCord
 
         void Start()
         {
-#if UNITY_WEBGL && !UNITY_EDITOR
             Utils.PatchUrlMappings(mappings);
-#endif
+
             // Initialize Playroom with discord mode, playroom will handle auth for us!
             prk.InsertCoin(new()
             {
@@ -64,12 +61,12 @@ namespace UnityCord
             }, () =>
             {
                 Debug.Log("Coin Inserted");
-                prk.GetDiscordClient().Ready(() =>
+                discordSDK = prk.GetDiscordClient();
+
+                discordSDK.Ready(() =>
                 {
                     Debug.LogWarning("Discord SDK is ready through playroom woohoo!");
                     discordReady = true;
-                    APIButton.interactable = true;
-                    ExternalURLButton.interactable = true;  
                 });
             });
         }
