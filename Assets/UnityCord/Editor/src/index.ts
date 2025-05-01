@@ -19,9 +19,7 @@ var LibraryMyPlugin = {
   ReadyInternal: function (callback) {
     try {
       globals.discordSdK.ready().then(() => {
-        console.log("[JSLIB] discordsdk is ready");
-        // prettier-ignore
-        {{{ makeDynCall("v", "callback") }}}()
+        {{{ makeDynCall("v", "callback") }}}();
       });
     } catch (error) {
       console.error(`[JSLIB] error ReadyInternal: ${error}`);
@@ -50,6 +48,25 @@ var LibraryMyPlugin = {
       });
     } catch (error) {
       console.error(`[JSLIB] Error in OpenInviteDialogInternal: ${error}`);
+    }
+  },
+  
+  GetUserInternal: function(id, callback) {
+    try {
+      id = UTF8ToString(id);
+      globals.discordSdK.commands.getUser(id).then((result) => {
+        console.log(`[JSLIB] GetUserInternal result: ${result}`);
+        var dataJson = JSON.stringify(result);
+        var data = _ConvertString(dataJson);
+        var key = _ConvertString(id);
+
+        {{{ makeDynCall("vi", "callback") }}}(key, data);
+
+      }).catch(err => {
+        console.error("[JSLIB] GetUserInternal error:", err);
+      });
+    } catch (error) {
+      console.error(`[JSLIB] Error in GetUserInternal: ${error}`);
     }
   },
   //#endregion

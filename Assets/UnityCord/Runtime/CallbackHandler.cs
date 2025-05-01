@@ -11,7 +11,7 @@ namespace UnityCord
 
         public static void RegisterCallback(string key, Delegate callback)
         {
-            callbacks.TryAdd(key, callback);
+            callbacks[key] = callback;
         }
 
         public static void InvokeCallback(string key)
@@ -19,6 +19,14 @@ namespace UnityCord
             if (callbacks.TryGetValue(key, out Delegate callback))
             {
                 (callback as Action).Invoke();
+            }
+        }
+       
+        public static void InvokeCallback(string key, string data)
+        {
+            if (callbacks.TryGetValue(key, out Delegate callback))
+            {
+                (callback as Action<string>).Invoke(data);
             }
         }
 
@@ -31,13 +39,11 @@ namespace UnityCord
             return null;
         }
 
-
-
-        [MonoPInvokeCallback(typeof(Action<string>))]
-        public static void InvokeAction(string key)
+        [MonoPInvokeCallback(typeof(Action<string, string>))]
+        public static void InvokeAction(string key, string data)
         {
             Debug.LogWarning($"[Unity]: key is {key}");
-            InvokeCallback(key);
+            InvokeCallback(key, data);
         }
     }
 }

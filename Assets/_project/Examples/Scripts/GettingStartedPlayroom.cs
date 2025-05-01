@@ -16,6 +16,8 @@ namespace UnityCord
         [SerializeField] Button ExternalURLButton;
         [SerializeField] Button InviteButton;
         [SerializeField] Button ReadyTestButton;
+        [SerializeField] Button GetUserButton;
+        [SerializeField] Button GetUserPlayroomButton;
 
         // Using Playroomkit for setting up discord auth and hosting the activity.
         PlayroomKit prk;
@@ -52,6 +54,36 @@ namespace UnityCord
                    Debug.LogWarning("Discord SDK is ready through playroom woohoo!");
                    discordReady = true;
                });
+            });
+            GetUserButton.onClick.AddListener(() =>
+            {
+                discordSDK.commands.GetUser(prk.Me().id, (data) =>
+                {
+                    Debug.LogWarning($"User data: {data}");
+                    responseText.text = data;
+                });
+            });
+            GetUserPlayroomButton.onClick.AddListener(() =>
+            {
+                try
+                {
+                    var player = prk.MyPlayer();
+                    var profile = player.GetProfile();
+                    responseText.text = string.Format(
+                        "Playroom User Info:\n" +
+                        "Name: {0}\n" +
+                        "Photo: {1}\n" +
+                        "ID: {2}",
+                        profile.name,
+                        profile.photo,
+                        player.id
+                    );
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError("Failed to get player info: " + e.Message);
+                    responseText.text = "Error: Could not retrieve player information";
+                }
             });
         }
 
