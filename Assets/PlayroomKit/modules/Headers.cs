@@ -96,6 +96,9 @@ namespace Playroom
             Action<string> onStateSetCallback = null);
 
         [DllImport("__Internal")]
+        private static extern string GetPlayroomTokenInternal();
+
+        [DllImport("__Internal")]
         private static extern void SetPlayerStateByPlayerId(string playerID, string key, int value,
             bool reliable = false);
 
@@ -162,5 +165,11 @@ namespace Playroom
         private static extern void ClearTurnsInternal(Action callback = null);
 
         #endregion
+
+        #region Discord
+        [DllImport("__Internal")]
+        private static extern void OpenDiscordInviteDialogInternal(Action callback = null);
+        #endregion
+
     }
 }

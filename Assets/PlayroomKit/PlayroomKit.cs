@@ -280,6 +280,12 @@ namespace Playroom
             return _playroomService.Me();
         }
 
+        public string GetPlayroomToken()
+        {
+            CheckPlayRoomInitialized();
+            return _playroomService.GetPlayroomToken();
+        }
+
         private void UnsubscribeOnQuit()
         {
             _playroomService.UnsubscribeOnQuit();
@@ -342,8 +348,16 @@ namespace Playroom
 
         #endregion
 
-
         #region Discord
+
+        public void OpenDiscordInviteDialog(Action callback = null)
+        {
+            CheckPlayRoomInitialized();
+            _playroomService.OpenDiscordInviteDialog(callback);
+        }
+
+
+
         public DiscordSDK GetDiscordClient()
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -351,6 +365,7 @@ namespace Playroom
 #endif
             return new DiscordSDK();
         }
+
 
         [DllImport("__Internal")]
         public static extern void GetDiscordClientInternal();

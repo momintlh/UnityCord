@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using AOT;
 using UnityEngine;
-using Playroom;
+
 namespace Playroom
 {
     public partial class PlayroomKit
@@ -54,6 +54,8 @@ namespace Playroom
 
             public void UnsubscribeOnQuit();
 
+            public string GetPlayroomToken();
+
             #region TurnBased
 
             public string GetChallengeId();
@@ -66,6 +68,10 @@ namespace Playroom
 
             public void ClearTurns(Action callback = null);
 
+            #endregion
+
+            #region Discord
+            public void OpenDiscordInviteDialog(Action callback = null);
             #endregion
 
 

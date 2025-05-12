@@ -208,6 +208,17 @@ namespace Playroom
             DebugLogger.LogWarning("[MockMode] Turn based API is currently not supported in local mode!");
         }
 
+        public string GetPlayroomToken()
+        {
+            DebugLogger.LogWarning("[MockMode] Playroom token is currently not supported in local mode!");
+            return default;
+        }
+
+        public void OpenDiscordInviteDialog(Action callback = null)
+        {
+            DebugLogger.LogWarning("[MockMode] Discord invite dialog is currently not supported in local mode!");
+            callback?.Invoke();
+        }
         #endregion
     }
 }
