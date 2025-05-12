@@ -28,6 +28,27 @@ var LibraryMyPlugin = {
   //#endregion
 
   //#region Commands
+  StartPurchaseInternal: function (skuId, callback) {
+    try {
+      skuId = UTF8ToString(skuId);
+      globals.discordSdK.commands
+        .startPurchase(skuId)
+        .then((result) => {
+          console.log(`[JSLIB] StartPurchaseInternal result: ${result}`);
+          var dataJson = JSON.stringify(result);
+          var data = _ConvertString(dataJson);
+          var key = _ConvertString(skuId);
+
+          {{{ makeDynCall("vi", "callback") }}}(key, data);
+        })
+        .catch((err) => {
+          console.error("[JSLIB] StartPurchaseInternal error:", err);
+        });
+    } catch (error) {
+      console.error(`[JSLIB] Error in StartPurchaseInternal: ${error}`);
+    }
+  },
+
   OpenExternalLinkInternal: function (url) {
     url = UTF8ToString(url);
     globals.discordSdK.commands

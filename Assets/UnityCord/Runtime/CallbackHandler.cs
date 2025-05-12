@@ -39,6 +39,13 @@ namespace UnityCord
             return null;
         }
 
+        [MonoPInvokeCallback(typeof(Action<string>))]
+        public static void InvokeAction(string key)
+        {
+            Debug.LogWarning($"[Unity]: key is {key}");
+            InvokeCallback(key);
+        }
+
         [MonoPInvokeCallback(typeof(Action<string, string>))]
         public static void InvokeAction(string key, string data)
         {

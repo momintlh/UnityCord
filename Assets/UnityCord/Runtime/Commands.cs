@@ -29,6 +29,15 @@ namespace UnityCord
             GetUserInternal(id, CallbackHandler.InvokeAction);
         }
 
+        public void StartPurchase(string skuId, Action<string> callback)
+        {
+            if (!Utils.ValidateDiscord("StartPurchase only works inside discord")) return;
+
+            CallbackHandler.RegisterCallback(skuId, callback);
+
+            StartPurchaseInternal(skuId, CallbackHandler.InvokeAction);
+        }
+
         #region Internals
         [DllImport("__Internal")]
         private static extern void OpenExternalLinkInternal(string url);
@@ -38,6 +47,9 @@ namespace UnityCord
 
         [DllImport("__Internal")]
         private static extern void GetUserInternal(string id, Action<string, string> callback);
+
+        [DllImport("__Internal")]
+        private static extern void StartPurchaseInternal(string skuId, Action<string> callback);
         #endregion
     }
 }
